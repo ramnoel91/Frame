@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Frame">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Frame</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ffffff'/%3E%3Crect x='12' y='12' width='40' height='40' rx='12' fill='none' stroke='%23C21E66' stroke-width='6'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23C21E66'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Crect x='12' y='12' width='40' height='40' rx='12' fill='none' stroke='%23C21E66' stroke-width='6'/%3E%3Ccircle cx='32' cy='32' r='7' fill='%23C21E66'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#C21E66; --accent-2:#E8467F; --ink:#111111; --muted:#5A5A5A; --line:#ECECEC;
+  --bg:#FFFFFF; --soft:#F5F4F6; --tint:#FDE2EC; --tint-ink:#9B154F;
+  --on-accent:#FFFFFF; --accent-text:#C21E66; --line2:#DADADA; --danger:#B42318; --av-r:32%; --font:'Manrope';
+  --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--font),system-ui,-apple-system,sans-serif;overscroll-behavior:none;transition:background-color .2s}
+button{font-family:inherit;color:inherit;cursor:pointer;background:none;border:none;padding:0}
+input,textarea{font-family:inherit;font-size:16px;color:var(--ink)}
+a{color:var(--accent-text)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;background:var(--bg)}
+#top{display:flex;align-items:center;justify-content:space-between;padding:calc(10px + var(--safe-t)) 12px 8px 16px;border-bottom:1px solid var(--line);min-height:58px;background:var(--bg);z-index:5}
+.logo{display:flex;align-items:center;gap:8px;font-size:24px;font-weight:800;letter-spacing:-.6px}
+.logo-mark{width:28px;height:28px;border:3px solid var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.logo-mark i{width:9px;height:9px;border-radius:5px;background:var(--accent)}
+.top-title{font-size:20px;font-weight:800}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px}
+.icon-btn:active{background:var(--soft)}
+#view{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#nav{display:flex;justify-content:space-around;align-items:center;padding:6px 8px calc(8px + var(--safe-b));border-top:1px solid var(--line);background:var(--bg);z-index:5}
+#nav .nb{width:56px;height:48px;display:flex;align-items:center;justify-content:center;color:var(--ink);opacity:.55}
+#nav .nb.on{opacity:1}
+#nav .create{width:48px;height:40px;border:2px solid var(--ink);border-radius:12px;opacity:1}
+.av{border-radius:var(--av-r);object-fit:cover;flex-shrink:0;display:inline-flex}
+.av-ini{background:var(--tint);color:var(--tint-ink);font-weight:800;align-items:center;justify-content:center}
+
+/* dark (videos tab) */
+#app.dark,#app.dark #nav{background:#000;color:#fff}
+#app.dark #nav{border-top-color:#1d1d1d}
+#app.dark #nav .nb{color:#fff}
+#app.dark #nav .create{border-color:#fff}
+#app.dark #top{display:none}
+
+/* moments */
+.moments{display:flex;gap:12px;padding:12px 16px 14px;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
+.moments::-webkit-scrollbar{display:none}
+.mo{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;width:70px}
+.mo-ring{width:68px;height:68px;border-radius:23px;border:3px solid var(--accent);padding:3px}
+.mo-ring img{width:100%;height:100%;border-radius:17px;object-fit:cover;display:block}
+.mo-add{width:68px;height:68px;border-radius:23px;border:2px dashed var(--muted);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.mo span{font-size:12px;color:var(--ink);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* post */
+.post{border-bottom:1px solid var(--line);padding-bottom:12px}
+.ph{display:flex;align-items:center;gap:10px;padding:10px 8px 10px 16px}
+.ph .who{flex:1;min-width:0}
+.ph .un{font-size:14px;font-weight:700}
+.ph .loc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media{position:relative;background:var(--soft);aspect-ratio:4/5;overflow:hidden;user-select:none;-webkit-user-select:none}
+.car{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.car img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;-webkit-touch-callout:none}
+.media video{width:100%;height:100%;object-fit:cover;display:block;background:#111}
+.dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.dots span{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.75)}
+.dots span.on{background:var(--accent)}
+.count{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;padding:4px 9px;border-radius:12px}
+.mute-ind{position:absolute;right:12px;bottom:12px;width:32px;height:32px;border-radius:16px;background:rgba(0,0,0,.6);color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.burst{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);color:#fff;pointer-events:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.35));opacity:0}
+.burst.go{animation:burst .8s ease-out}
+@keyframes burst{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}20%{transform:translate(-50%,-50%) scale(1.15);opacity:1}40%{transform:translate(-50%,-50%) scale(.95)}80%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+.pa{display:flex;align-items:center;padding:4px 8px}
+.pa .sp{flex:1}
+.pa .liked{color:var(--accent-text)}
+.pa .liked svg{animation:pop .3s ease-out}
+@keyframes pop{50%{transform:scale(1.25)}}
+.pm{padding:0 16px;display:flex;flex-direction:column;gap:5px;font-size:14px;line-height:1.45}
+.pm .lk{font-weight:700}
+.pm .cap{margin:0;word-wrap:break-word}
+.pm .link{color:var(--muted);text-align:left;font-size:14px}
+.pm .time{font-size:12px;color:var(--muted)}
+.tag{color:var(--accent-text);font-weight:600;font-size:inherit}
+
+/* empty */
+.empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:56px 32px}
+.empty .big{width:84px;height:84px;border-radius:28px;border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.empty h2{margin:0;font-size:22px;font-weight:800}
+.empty p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.btn{height:46px;padding:0 20px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn.block{width:100%}
+.btn.danger{background:#B42318;color:#fff}
+
+/* explore + grid */
+.search{position:sticky;top:0;background:var(--bg);padding:10px 12px;z-index:2}
+.search input{width:100%;height:44px;border:none;border-radius:14px;background:var(--soft);padding:0 16px 0 42px}
+.search .s-ic{position:absolute;left:26px;top:22px;color:var(--muted);pointer-events:none}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+.tile{position:relative;aspect-ratio:4/5;background:var(--soft);overflow:hidden;display:block;width:100%}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .badge{position:absolute;top:6px;right:6px;color:#fff;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+.tile .vid-ph{width:100%;height:100%;background:#26232E}
+
+/* reels */
+.reels{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;background:#000}
+.reels::-webkit-scrollbar{display:none}
+.slide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;background:#000;overflow:hidden}
+.slide video{width:100%;height:100%;object-fit:cover;display:block}
+.r-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:calc(10px + var(--safe-t)) 10px 10px 16px;color:#fff;background:linear-gradient(rgba(0,0,0,.45),transparent)}
+.r-top b{font-size:18px}
+.rail{position:absolute;right:6px;bottom:96px;display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff}
+.rail .rb{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;font-weight:700;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+.rail .rb .icon-btn{width:48px;height:48px}
+.rail .liked{color:var(--accent-2)}
+.r-info{position:absolute;left:0;right:64px;bottom:0;padding:16px 16px 18px;color:#fff;display:flex;flex-direction:column;gap:8px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.r-info .row{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px}
+.r-info p{margin:0;font-size:14px;line-height:1.45}
+.r-info .tag{color:#fff;text-decoration:underline}
+.r-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}
+.r-bar i{display:block;height:100%;width:0;background:#fff}
+.reels-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:32px;color:#fff;background:#000}
+.reels-empty p{margin:0;color:#C9C9C9;line-height:1.5}
+.flash{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:36px;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;pointer-events:none}
+.flash.on{opacity:1}
+
+/* profile */
+.cover{height:120px;background-color:var(--accent);background-size:cover;background-position:center}
+.prof{padding:0 16px 12px;display:flex;flex-direction:column;gap:12px}
+.prof-top{display:flex;align-items:flex-end;gap:16px}
+.prof-av{margin-top:-40px;border:4px solid var(--bg);border-radius:var(--av-r);display:inline-flex;background:var(--bg)}
+.stats{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));text-align:center}
+.stats b{display:block;font-size:20px;font-weight:800}
+.stats span{font-size:13px;color:var(--muted)}
+.prof .nm{font-weight:800;font-size:16px}
+.prof .bio{margin:2px 0 0;font-size:14px;line-height:1.45;white-space:pre-line;color:var(--ink)}
+.prof-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ptabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.ptabs button{height:46px;display:flex;align-items:center;justify-content:center;color:var(--muted);border-bottom:2px solid transparent}
+.ptabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.p-empty{padding:40px 24px;text-align:center;color:var(--muted);font-size:14px}
+
+/* sheets & overlays */
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{background:var(--bg);width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:8px 16px calc(18px + var(--safe-b));max-height:92dvh;overflow-y:auto;animation:up .25s ease-out;color:var(--ink)}
+@keyframes up{from{transform:translateY(40px);opacity:.4}}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line2);margin:4px auto 10px}
+.sheet h3{margin:4px 0 12px;font-size:18px;font-weight:800;text-align:center}
+.opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 8px;border-radius:14px;text-align:left;font-size:16px;font-weight:700}
+.opt:active{background:var(--soft)}
+.opt .oi{width:44px;height:44px;border-radius:14px;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:13px;margin-top:2px}
+.opt.red{color:var(--danger)}
+.full{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;max-width:520px;margin:0 auto;animation:fade .15s}
+.full-h{display:flex;align-items:center;gap:6px;padding:calc(8px + var(--safe-t)) 8px 8px;border-bottom:1px solid var(--line)}
+.full-h b{flex:1;font-size:17px;font-weight:800}
+.full-b{flex:1;overflow-y:auto}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:13px;font-weight:700;color:var(--muted)}
+.field input,.field textarea{border:1px solid var(--line2);border-radius:12px;padding:12px 14px;background:var(--bg);width:100%}
+.field textarea{resize:none;min-height:90px;line-height:1.45}
+.field input:focus,.field textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.hint{font-size:12px;color:var(--muted)}
+.c-list{display:flex;flex-direction:column;gap:14px;padding:4px 0 14px;min-height:120px}
+.c-item{display:flex;gap:10px;align-items:flex-start}
+.c-item .body{flex:1;font-size:14px;line-height:1.45}
+.c-item .meta{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:12px}
+.c-item .meta button{font-size:12px;color:var(--muted);font-weight:700}
+.c-form{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding-top:12px}
+.c-form input{flex:1;height:44px;border-radius:22px;border:1px solid var(--line2);background:var(--bg);padding:0 16px}
+.c-form button{font-weight:800;color:var(--accent-text);padding:0 8px;height:44px}
+.c-form button:disabled{opacity:.4}
+
+/* story viewer */
+#story{position:fixed;inset:0;z-index:60;background:#000;color:#fff;display:flex;flex-direction:column;max-width:520px;margin:0 auto}
+.st-bars{display:flex;gap:4px;padding:calc(10px + var(--safe-t)) 10px 6px}
+.st-bars span{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden}
+.st-bars i{display:block;height:100%;width:0;background:#fff}
+.st-h{display:flex;align-items:center;gap:10px;padding:4px 6px 8px 12px}
+.st-h .who{flex:1;font-weight:800;font-size:14px}
+.st-h .who small{font-weight:500;color:#D0D0D0;margin-left:6px}
+.st-img{flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.st-img img{max-width:100%;max-height:100%;object-fit:contain}
+.st-tap{position:absolute;top:0;bottom:0;width:35%}
+.st-tap.l{left:0}.st-tap.r{right:0;width:65%}
+
+#toast{position:fixed;left:50%;bottom:calc(86px + var(--safe-b));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;z-index:90;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.busy{position:fixed;inset:0;z-index:95;background:rgba(255,255,255,.7);background:color-mix(in srgb,var(--bg) 80%,transparent);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:800}
+.spin{width:36px;height:36px;border-radius:50%;border:4px solid var(--tint);border-top-color:var(--accent);animation:sp 0.8s linear infinite;margin-right:12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.compose-prev{background:var(--soft);aspect-ratio:4/5;max-height:46dvh;width:100%;position:relative;overflow:hidden}
+.compose-prev .car img{object-fit:cover}
+.compose-prev video{width:100%;height:100%;object-fit:contain;background:#111}
+.ed-av{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 18px}
+.ed-av button{color:var(--accent-text);font-weight:800;font-size:14px;padding:6px}
+
+/* theme editor */
+.th-sec{margin-bottom:20px}
+.th-l{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px}
+.th-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.th-pre{height:54px;border-radius:14px;border:2px solid var(--line2);display:flex;align-items:center;gap:10px;padding:0 12px;font-weight:800;font-size:14px}
+.th-pre.on{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:1px}
+.th-dot{width:22px;height:22px;border-radius:11px;flex-shrink:0}
+.th-sw{display:flex;flex-wrap:wrap;gap:10px}
+.th-c{width:44px;height:44px;border-radius:22px;border:2px solid var(--line2)}
+.th-c.on{outline:3px solid var(--ink);outline-offset:2px}
+.th-custom{width:44px;height:44px;border-radius:22px;border:2px dashed var(--muted);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;color:var(--ink)}
+.th-custom input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:none;padding:0}
+.th-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.th-o{min-height:66px;border-radius:14px;border:2px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px}
+.th-o b{font-size:22px;line-height:1}
+.th-o span{font-size:12px;color:var(--muted);font-family:var(--font)}
+.th-o.on{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:1px}
+.th-cover{height:96px;border-radius:14px;background-color:var(--accent);background-size:cover;background-position:center}
+.th-foot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;position:sticky;bottom:calc(-18px - var(--safe-b));background:var(--bg);padding:10px 0 4px;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top"></header>
+  <main id="view" aria-live="polite"></main>
+  <nav id="nav" aria-label="Main">
+    <button class="nb" data-action="tab" data-tab="home" aria-label="Home"></button>
+    <button class="nb" data-action="tab" data-tab="explore" aria-label="Explore"></button>
+    <button class="nb create" data-action="create" aria-label="Create"></button>
+    <button class="nb" data-action="tab" data-tab="reels" aria-label="Videos"></button>
+    <button class="nb" data-action="tab" data-tab="profile" aria-label="Profile"></button>
+  </nav>
+</div>
+<div id="layer"></div>
+<div id="toast" role="status"></div>
+<input type="file" id="pickPhotos" accept="image/*" multiple class="sr" tabindex="-1" aria-hidden="true">
+<input type="file" id="pickVideo" accept="video/*" class="sr" tabindex="-1" aria-hidden="true">
+<input type="file" id="pickMoment" accept="image/*" class="sr" tabindex="-1" aria-hidden="true">
+<input type="file" id="pickAvatar" accept="image/*" class="sr" tabindex="-1" aria-hidden="true">
+<input type="file" id="pickCover" accept="image/*" class="sr" tabindex="-1" aria-hidden="true">
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- icons ---------- */
+const sv = (d, o = {}) => `<svg aria-hidden="true" width="${o.s||24}" height="${o.s||24}" viewBox="0 0 24 24" fill="${o.fill||'none'}" stroke="${o.fill?'none':'currentColor'}" stroke-width="${o.w||2}" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const HEART = '<path d="M12 20s-7-4.4-9-9a4.7 4.7 0 0 1 9-2.3A4.7 4.7 0 0 1 21 11c-2 4.6-9 9-9 9z"/>';
+const I = {
+  home: o => sv('<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>', o),
+  homeF: () => sv('<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>', {fill:'currentColor'}),
+  search: o => sv('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>', o),
+  plus: o => sv('<path d="M12 5v14M5 12h14"/>', Object.assign({w:2.6}, o)),
+  reels: o => sv('<rect x="4" y="3" width="16" height="18" rx="4"/><path d="M10 9v6l5-3z"/>', o),
+  reelsF: () => `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="4" fill="currentColor"/><path d="M10 9v6l5-3z" fill="#000"/></svg>`,
+  heart: o => sv(HEART, o),
+  heartF: o => sv(HEART, Object.assign({fill:'currentColor'}, o)),
+  comment: o => sv('<path d="M4 5h16v11H9l-5 4z"/>', o),
+  send: o => sv('<path d="M4 12 20 4l-6 16-3-7z"/>', o),
+  save: o => sv('<path d="M6 3h12v18l-6-4-6 4z"/>', o),
+  saveF: o => sv('<path d="M6 3h12v18l-6-4-6 4z"/>', Object.assign({fill:'currentColor'}, o)),
+  more: () => sv('<circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/>', {fill:'currentColor'}),
+  back: () => sv('<path d="M15 5l-7 7 7 7"/>', {w:2.4}),
+  close: o => sv('<path d="M6 6l12 12M18 6 6 18"/>', Object.assign({w:2.4}, o)),
+  camera: o => sv('<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="13" r="3.5"/>', o),
+  image: o => sv('<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-8 8"/>', o),
+  video: o => sv('<rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/>', o),
+  moment: o => sv('<circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="4"/>', o),
+  gear: o => sv('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>', o),
+  grid: o => sv('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>', o),
+  stack: o => sv('<rect x="7" y="7" width="14" height="14" rx="2"/><path d="M3 17V5a2 2 0 0 1 2-2h12"/>', Object.assign({w:2.2,s:18}, o)),
+  muted: o => sv('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/>', Object.assign({s:16}, o)),
+  sound: o => sv('<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>', Object.assign({s:16}, o)),
+  trash: o => sv('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>', o),
+  play: o => sv('<path d="M8 5v14l11-7z"/>', Object.assign({fill:'currentColor', s:18}, o)),
+  pin: o => sv('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>', Object.assign({s:16}, o)),
+};
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const DAY = 864e5;
+function ago(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm';
+  if (s < 86400) return Math.floor(s / 3600) + 'h';
+  if (s < 604800) return Math.floor(s / 86400) + 'd';
+  return new Date(t).toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+}
+function longAgo(t) {
+  const s = (Date.now() - t) / 1000;
+  if (s < 60) return 'Just now';
+  if (s < 3600) { const m = Math.floor(s / 60); return m + (m === 1 ? ' minute ago' : ' minutes ago'); }
+  if (s < 86400) { const h = Math.floor(s / 3600); return h + (h === 1 ? ' hour ago' : ' hours ago'); }
+  if (s < 604800) { const d = Math.floor(s / 86400); return d + (d === 1 ? ' day ago' : ' days ago'); }
+  return new Date(t).toLocaleDateString(undefined, {month: 'long', day: 'numeric', year: 'numeric'});
+}
+function fmt(text) {
+  return esc(text).replace(/#([\p{L}\p{N}_]+)/gu, '<button class="tag" data-action="tag" data-tag="$1">#$1</button>').replace(/\n/g, '<br>');
+}
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2400);
+}
+function busy(on, label = 'Working…') {
+  let b = $('.busy');
+  if (on && !b) { b = document.createElement('div'); b.className = 'busy'; b.innerHTML = `<div class="spin"></div>${esc(label)}`; document.body.appendChild(b); }
+  if (!on && b) b.remove();
+}
+
+/* ---------- storage (IndexedDB with in-memory fallback) ---------- */
+let DB = null;
+const mem = {posts: new Map(), moments: new Map(), meta: new Map()};
+function openDB() {
+  return new Promise(res => {
+    try {
+      const r = indexedDB.open('frame-app', 1);
+      r.onupgradeneeded = () => {
+        const d = r.result;
+        d.createObjectStore('posts', {keyPath: 'id'});
+        d.createObjectStore('moments', {keyPath: 'id'});
+        d.createObjectStore('meta');
+      };
+      r.onsuccess = () => { DB = r.result; res(true); };
+      r.onerror = () => res(false);
+      r.onblocked = () => res(false);
+    } catch (e) { res(false); }
+  });
+}
+const rq = r => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+function tx(name, mode) { const t = DB.transaction(name, mode); return {s: t.objectStore(name), done: new Promise((res, rej) => { t.oncomplete = res; t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); })}; }
+async function dbAll(name) { if (!DB) return [...mem[name].values()]; return rq(tx(name, 'readonly').s.getAll()); }
+async function dbGet(name, key) { if (!DB) return mem[name].get(key); return rq(tx(name, 'readonly').s.get(key)); }
+async function dbPut(name, val, key) {
+  if (!DB) { mem[name].set(key ?? val.id, val); return; }
+  const t = tx(name, 'readwrite'); key === undefined ? t.s.put(val) : t.s.put(val, key); return t.done;
+}
+async function dbDel(name, key) { if (!DB) { mem[name].delete(key); return; } const t = tx(name, 'readwrite'); t.s.delete(key); return t.done; }
+async function dbClear() { for (const n of ['posts', 'moments', 'meta']) { if (!DB) mem[n].clear(); else { const t = tx(n, 'readwrite'); t.s.clear(); await t.done; } } }
+async function savePost(p) {
+  try { await dbPut('posts', p); }
+  catch (e) { toast('Could not save — your phone may be low on space'); throw e; }
+}
+let askedPersist = false;
+function askPersist() { if (askedPersist) return; askedPersist = true; try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {} }
+
+/* ---------- media helpers ---------- */
+const urls = new WeakMap();
+function url(blob) { if (!blob) return ''; let u = urls.get(blob); if (!u) { u = URL.createObjectURL(blob); urls.set(blob, u); } return u; }
+function loadImg(file) {
+  return new Promise((res, rej) => { const im = new Image(); const u = URL.createObjectURL(file); im.onload = () => { res(im); setTimeout(() => URL.revokeObjectURL(u), 1000); }; im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('bad image')); }; im.src = u; });
+}
+async function compress(file, max = 1440, q = 0.85) {
+  let src, w, h;
+  try { src = await createImageBitmap(file, {imageOrientation: 'from-image'}); w = src.width; h = src.height; }
+  catch (e) { src = await loadImg(file); w = src.naturalWidth; h = src.naturalHeight; }
+  const k = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  if (src.close) src.close();
+  const out = await new Promise(r => c.toBlob(r, 'image/jpeg', q));
+  return out || file;
+}
+function videoPoster(file) {
+  return new Promise(res => {
+    const v = document.createElement('video'); const u = URL.createObjectURL(file);
+    let done = false; const fin = b => { if (done) return; done = true; URL.revokeObjectURL(u); res(b); };
+    v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = u;
+    v.onloadeddata = () => { try { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); } catch (e) { fin(null); } };
+    v.onseeked = () => {
+      try {
+        const k = Math.min(1, 720 / Math.max(v.videoWidth, v.videoHeight || 1));
+        const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(v.videoWidth * k)); c.height = Math.max(1, Math.round(v.videoHeight * k));
+        c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+        c.toBlob(b => fin(b), 'image/jpeg', 0.8);
+      } catch (e) { fin(null); }
+    };
+    v.onerror = () => fin(null);
+    setTimeout(() => fin(null), 6000);
+  });
+}
+
+/* ---------- themes ---------- */
+const PRESETS = [
+  {id: 'classic', name: 'Classic', bg: '#FFFFFF', accent: '#C21E66', font: 'Manrope'},
+  {id: 'midnight', name: 'Midnight', bg: '#0E0F14', accent: '#8B7CFF', font: 'Manrope'},
+  {id: 'sunset', name: 'Sunset', bg: '#FFF3EA', accent: '#E0532F', font: 'Fraunces'},
+  {id: 'ocean', name: 'Ocean', bg: '#EAF4F8', accent: '#0E6E8C', font: 'Nunito'},
+  {id: 'forest', name: 'Forest', bg: '#12201A', accent: '#7BD88F', font: 'Manrope'},
+  {id: 'gamer', name: 'Gamer', bg: '#0B0B0F', accent: '#C6F432', font: 'Space Grotesk'},
+  {id: 'candy', name: 'Candy', bg: '#FFF0F7', accent: '#E0408A', font: 'Nunito'},
+  {id: 'mono', name: 'Mono', bg: '#FFFFFF', accent: '#111111', font: 'IBM Plex Mono'},
+];
+const ACCENTS = ['#C21E66', '#E0532F', '#F5A524', '#2FB36B', '#0E6E8C', '#3B5BFF', '#8B7CFF', '#C6F432', '#111111'];
+const BGS = ['#FFFFFF', '#FFF3EA', '#EAF4F8', '#F3F0FF', '#FFF0F7', '#12201A', '#0E0F14', '#000000'];
+const FONTS = [{id: 'Manrope', label: 'Modern'}, {id: 'Nunito', label: 'Rounded'}, {id: 'Fraunces', label: 'Classic'}, {id: 'Space Grotesk', label: 'Techy'}, {id: 'IBM Plex Mono', label: 'Typewriter'}];
+const SHAPES = [{id: 'rounded', label: 'Rounded', r: '32%'}, {id: 'circle', label: 'Circle', r: '50%'}, {id: 'square', label: 'Square', r: '10%'}];
+const DEFAULT_THEME = {preset: 'classic', bg: '#FFFFFF', accent: '#C21E66', font: 'Manrope', shape: 'rounded'};
+function hex2rgb(h) { h = String(h || '#000').replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16) || 0; return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function rgb2hex(a) { return '#' + a.map(v => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0')).join('').toUpperCase(); }
+function lum(h) { const w = [0.2126, 0.7152, 0.0722]; return hex2rgb(h).reduce((s, v, i) => { v /= 255; return s + w[i] * (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); }, 0); }
+function contrast(a, b) { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+function mix(a, b, t) { const A = hex2rgb(a), B = hex2rgb(b); return rgb2hex(A.map((v, i) => v + (B[i] - v) * t)); }
+function readable(c, bg, toward, min) { let out = c, t = 0; while (contrast(out, bg) < min && t < 1) { t = Math.min(1, t + 0.08); out = mix(c, toward, t); } return out; }
+function fullTheme(th) { return Object.assign({}, DEFAULT_THEME, th || {}); }
+function applyTheme(th) {
+  th = fullTheme(th);
+  const bg = th.bg, dark = lum(bg) < 0.25, ink = dark ? '#F4F4F6' : '#111111';
+  const tint = mix(bg, th.accent, dark ? 0.3 : 0.16);
+  const v = {
+    '--bg': bg, '--ink': ink,
+    '--muted': readable(mix(ink, bg, 0.42), bg, ink, 4.6),
+    '--line': mix(bg, ink, 0.1), '--line2': mix(bg, ink, 0.22), '--soft': mix(bg, ink, 0.06),
+    '--accent': th.accent, '--accent-text': readable(th.accent, bg, ink, 4.5),
+    '--accent-2': readable(th.accent, '#000000', '#FFFFFF', 3),
+    '--on-accent': contrast('#FFFFFF', th.accent) >= contrast('#111111', th.accent) ? '#FFFFFF' : '#111111',
+    '--tint': tint, '--tint-ink': readable(th.accent, tint, ink, 4.5),
+    '--danger': dark ? '#FF8A80' : '#B42318',
+    '--font': `'${th.font}'`,
+    '--av-r': (SHAPES.find(s => s.id === th.shape) || SHAPES[0]).r,
+  };
+  const r = document.documentElement.style;
+  for (const k in v) r.setProperty(k, v[k]);
+  S.themeBg = bg;
+  const m = document.querySelector('meta[name=theme-color]'); if (m && S.tab !== 'reels') m.content = bg;
+}
+
+/* ---------- state ---------- */
+const S = {tab: 'home', posts: [], moments: [], profile: null, search: '', ptab: 'grid', muted: true, draft: null, detail: null, comments: null};
+const byId = id => S.posts.find(p => p.id === id);
+const uname = () => S.profile?.username || 'you';
+function avatar(size = 34) {
+  const p = S.profile;
+  if (p?.avatar) return `<img class="av" style="width:${size}px;height:${size}px" src="${url(p.avatar)}" alt="">`;
+  const base = (p?.name || p?.username || 'You').trim();
+  const ini = base.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'Y';
+  return `<span class="av av-ini" style="width:${size}px;height:${size}px;font-size:${Math.round(size * .36)}px" aria-hidden="true">${esc(ini)}</span>`;
+}
+
+/* ---------- top bar & nav ---------- */
+function renderTop() {
+  const top = $('#top');
+  if (S.tab === 'home') top.innerHTML = `<div class="logo"><span class="logo-mark"><i></i></span>frame</div>
+    <div><button class="icon-btn" data-action="pick-moment" aria-label="Add a moment">${I.camera()}</button><button class="icon-btn" data-action="go-saved" aria-label="Saved posts">${I.save()}</button></div>`;
+  else if (S.tab === 'explore') top.innerHTML = `<div class="top-title">Explore</div>`;
+  else if (S.tab === 'profile') top.innerHTML = `<div class="top-title">@${esc(uname())}</div><button class="icon-btn" data-action="settings" aria-label="Settings">${I.gear()}</button>`;
+  else top.innerHTML = '';
+}
+function renderNav() {
+  const map = {home: [I.home(), I.homeF()], explore: [I.search(), I.search({w: 2.8})], reels: [I.reels(), I.reelsF()]};
+  $$('#nav .nb').forEach(b => {
+    const t = b.dataset.tab; const on = t === S.tab;
+    b.classList.toggle('on', on); if (t) b.setAttribute('aria-current', on ? 'page' : 'false');
+    if (t === 'profile') b.innerHTML = `<span style="display:inline-flex;border-radius:32%;${on ? 'outline:2px solid currentColor;outline-offset:2px' : ''}">${avatar(26)}</span>`;
+    else if (t) b.innerHTML = map[t][on ? 1 : 0];
+    else b.innerHTML = I.plus({s: 20});
+  });
+  $('#app').classList.toggle('dark', S.tab === 'reels');
+  document.querySelector('meta[name=theme-color]').content = S.tab === 'reels' ? '#000000' : (S.themeBg || '#ffffff');
+}
+
+/* ---------- views ---------- */
+function momentsRow() {
+  const ms = S.moments;
+  return `<section class="moments" aria-label="Moments">
+    <button class="mo" data-action="pick-moment"><span class="mo-add">${I.plus({s: 22})}</span><span>Add moment</span></button>
+    ${ms.map((m, i) => `<button class="mo" data-action="view-moment" data-i="${i}" aria-label="View moment from ${esc(ago(m.created))} ago"><span class="mo-ring"><img src="${url(m.blob)}" alt=""></span><span>${esc(ago(m.created))}</span></button>`).join('')}
+  </section>`;
+}
+function emptyState(title, body, action, label) {
+  return `<div class="empty"><div class="big">${I.image({s: 36})}</div><h2>${title}</h2><p>${body}</p>${action ? `<button class="btn" data-action="${action}" style="margin-top:8px">${label}</button>` : ''}</div>`;
+}
+function postActions(p) {
+  return `<button class="icon-btn ${p.liked ? 'liked' : ''}" data-action="like" data-id="${p.id}" aria-label="${p.liked ? 'Unlike' : 'Like'}" aria-pressed="${!!p.liked}">${p.liked ? I.heartF({s: 26}) : I.heart({s: 26})}</button>
+    <button class="icon-btn" data-action="comments" data-id="${p.id}" aria-label="Comments">${I.comment()}</button>
+    <button class="icon-btn" data-action="share" data-id="${p.id}" aria-label="Share">${I.send()}</button>
+    <span class="sp"></span>
+    <button class="icon-btn" data-action="save" data-id="${p.id}" aria-label="${p.saved ? 'Remove from saved' : 'Save'}" aria-pressed="${!!p.saved}">${p.saved ? I.saveF() : I.save()}</button>`;
+}
+function postMeta(p) {
+  const n = (p.comments || []).length;
+  return `${p.liked ? '<div class="lk">Liked by you</div>' : ''}
+    ${p.caption ? `<p class="cap"><b>${esc(uname())}</b> ${fmt(p.caption)}</p>` : ''}
+    <button class="link" data-action="comments" data-id="${p.id}">${n ? `View ${n === 1 ? '1 comment' : 'all ' + n + ' comments'}` : 'Add a comment…'}</button>
+    <div class="time">${esc(longAgo(p.created))}</div>`;
+}
+function postMedia(p) {
+  if (p.type === 'video') return `<div class="media" data-action="mtap" data-id="${p.id}">
+      <video class="pv" data-id="${p.id}" src="${url(p.media[0])}" ${p.poster ? `poster="${url(p.poster)}"` : ''} playsinline muted loop preload="metadata"></video>
+      <span class="mute-ind">${S.muted ? I.muted() : I.sound()}</span><span class="burst">${I.heartF({s: 96})}</span></div>`;
+  const many = p.media.length > 1;
+  return `<div class="media" data-action="mtap" data-id="${p.id}">
+      <div class="car">${p.media.map((b, i) => `<img src="${url(b)}" alt="Photo ${i + 1} of ${p.media.length}" draggable="false">`).join('')}</div>
+      ${many ? `<div class="dots">${p.media.map((_, i) => `<span class="${i ? '' : 'on'}"></span>`).join('')}</div><span class="count">1/${p.media.length}</span>` : ''}
+      <span class="burst">${I.heartF({s: 96})}</span></div>`;
+}
+function postCard(p) {
+  return `<article class="post" data-post="${p.id}">
+    <div class="ph">${avatar(34)}<div class="who"><div class="un">${esc(uname())}</div>${p.location ? `<div class="loc">${esc(p.location)}</div>` : ''}</div>
+      <button class="icon-btn" data-action="post-more" data-id="${p.id}" aria-label="More options">${I.more()}</button></div>
+    ${postMedia(p)}
+    <div class="pa">${postActions(p)}</div>
+    <div class="pm">${postMeta(p)}</div>
+  </article>`;
+}
+function tile(p) {
+  let inner, badge = '';
+  if (p.type === 'video') { inner = p.poster ? `<img src="${url(p.poster)}" alt="">` : `<div class="vid-ph"></div>`; badge = I.play(); }
+  else { inner = `<img src="${url(p.media[0])}" alt="">`; if (p.media.length > 1) badge = I.stack(); }
+  return `<button class="tile" data-action="open" data-id="${p.id}" aria-label="Open ${p.type === 'video' ? 'video' : 'photo'} post${p.caption ? ': ' + esc(p.caption.slice(0, 60)) : ''}">${inner}${badge ? `<span class="badge">${badge}</span>` : ''}</button>`;
+}
+function viewHome() {
+  let h = momentsRow();
+  h += S.posts.length ? S.posts.map(postCard).join('') : emptyState('Share your first photo', 'Your photos and videos show up here. Everything stays saved on this phone.', 'create', `${I.plus({s: 18})} Create a post`);
+  return h;
+}
+function searchHits() {
+  const q = S.search.trim().toLowerCase().replace(/^#/, '');
+  if (!q) return S.posts;
+  return S.posts.filter(p => (p.caption || '').toLowerCase().includes(q) || (p.location || '').toLowerCase().includes(q));
+}
+function gridHTML(list, emptyMsg) { return list.length ? `<div class="grid">${list.map(tile).join('')}</div>` : `<div class="p-empty">${emptyMsg}</div>`; }
+function viewExplore() {
+  if (!S.posts.length) return emptyState('Nothing to explore yet', 'Once you post, every photo and video lands here so you can search by caption, #hashtag or place.', 'create', `${I.plus({s: 18})} Create a post`);
+  return `<div class="search"><label for="q" class="sr">Search posts</label><span class="s-ic">${I.search({s: 18})}</span><input id="q" type="search" placeholder="Search captions, #tags, places" value="${esc(S.search)}" autocomplete="off"></div>
+    <div id="results">${gridHTML(searchHits(), 'No posts match that search.')}</div>`;
+}
+function reelSlide(p) {
+  return `<section class="slide" data-post="${p.id}">
+    <video class="rv" data-id="${p.id}" src="${url(p.media[0])}" ${p.poster ? `poster="${url(p.poster)}"` : ''} playsinline muted loop preload="metadata" data-action="rtap"></video>
+    <span class="burst">${I.heartF({s: 110})}</span><span class="flash">${S.muted ? I.muted({s: 30}) : I.sound({s: 30})}</span>
+    <div class="rail">${railHTML(p)}</div>
+    <div class="r-info"><div class="row">${avatar(36)}<span>${esc(uname())}</span></div>
+      ${p.caption ? `<p>${fmt(p.caption)}</p>` : ''}
+      <div class="r-bar"><i></i></div></div>
+  </section>`;
+}
+function railHTML(p) {
+  const n = (p.comments || []).length;
+  return `<div class="rb"><button class="icon-btn ${p.liked ? 'liked' : ''}" data-action="like" data-id="${p.id}" aria-label="${p.liked ? 'Unlike' : 'Like'}" aria-pressed="${!!p.liked}">${p.liked ? I.heartF({s: 32}) : I.heart({s: 32})}</button>${p.liked ? 'Liked' : 'Like'}</div>
+    <div class="rb"><button class="icon-btn" data-action="comments" data-id="${p.id}" aria-label="Comments">${I.comment({s: 30})}</button>${n}</div>
+    <div class="rb"><button class="icon-btn" data-action="share" data-id="${p.id}" aria-label="Share">${I.send({s: 30})}</button>Share</div>
+    <div class="rb"><button class="icon-btn" data-action="save" data-id="${p.id}" aria-label="${p.saved ? 'Remove from saved' : 'Save'}" aria-pressed="${!!p.saved}">${p.saved ? I.saveF({s: 28}) : I.save({s: 28})}</button>${p.saved ? 'Saved' : 'Save'}</div>
+    <div class="rb"><button class="icon-btn" data-action="post-more" data-id="${p.id}" aria-label="More options">${I.more()}</button></div>`;
+}
+function viewReels() {
+  const vids = S.posts.filter(p => p.type === 'video');
+  if (!vids.length) return `<div class="reels-empty"><div style="width:84px;height:84px;border-radius:28px;border:3px solid #fff;display:flex;align-items:center;justify-content:center">${I.reels({s: 36})}</div>
+    <h2 style="margin:6px 0 0;font-size:22px">No videos yet</h2><p>Post a short video and it plays here, full screen. Swipe up for the next one.</p>
+    <button class="btn" data-action="pick-video" style="margin-top:8px">${I.video({s: 18})} Post a video</button></div>`;
+  return `<div class="reels">${vids.map(reelSlide).join('')}</div>
+    <div class="r-top" style="position:absolute;top:0;left:0;right:0;pointer-events:none"><b>Videos</b><button class="icon-btn" data-action="toggle-mute" aria-label="${S.muted ? 'Turn sound on' : 'Mute'}" style="pointer-events:auto;color:#fff">${S.muted ? I.muted({s: 22}) : I.sound({s: 22})}</button></div>`;
+}
+function viewProfile() {
+  const p = S.profile || {};
+  const saved = S.posts.filter(x => x.saved), vids = S.posts.filter(x => x.type === 'video');
+  const list = S.ptab === 'saved' ? saved : S.ptab === 'videos' ? vids : S.posts;
+  const msg = S.ptab === 'saved' ? 'Tap the bookmark on a post to save it here.' : S.ptab === 'videos' ? 'Your videos will show up here.' : 'Your posts will show up here.';
+  return `<div class="cover" ${p.cover ? `style="background-image:url('${url(p.cover)}')"` : ''}></div>
+  <section class="prof">
+    <div class="prof-top"><span class="prof-av">${avatar(86)}</span><div class="stats" style="padding-bottom:6px"><div><b>${S.posts.length}</b><span>Posts</span></div><div><b>${S.moments.length}</b><span>Moments</span></div><div><b>${saved.length}</b><span>Saved</span></div></div></div>
+    <div>${p.name ? `<div class="nm">${esc(p.name)}</div>` : ''}${p.bio ? `<p class="bio">${esc(p.bio)}</p>` : ''}</div>
+    <div class="prof-btns"><button class="btn ghost" data-action="edit-profile">Edit profile</button><button class="btn ghost" data-action="theme">Customize</button></div>
+  </section>
+  <div class="ptabs" role="tablist">
+    <button role="tab" class="${S.ptab === 'grid' ? 'on' : ''}" aria-selected="${S.ptab === 'grid'}" data-action="ptab" data-t="grid" aria-label="All posts">${I.grid({s: 22})}</button>
+    <button role="tab" class="${S.ptab === 'videos' ? 'on' : ''}" aria-selected="${S.ptab === 'videos'}" data-action="ptab" data-t="videos" aria-label="Videos">${I.reels({s: 22})}</button>
+    <button role="tab" class="${S.ptab === 'saved' ? 'on' : ''}" aria-selected="${S.ptab === 'saved'}" data-action="ptab" data-t="saved" aria-label="Saved">${I.save({s: 22})}</button>
+  </div>
+  ${gridHTML(list, msg)}`;
+}
+
+/* ---------- render ---------- */
+function render(keepScroll) {
+  const v = $('#view'); const y = v.scrollTop;
+  renderTop(); renderNav();
+  v.style.overflowY = S.tab === 'reels' ? 'hidden' : 'auto';
+  v.style.position = 'relative';
+  v.innerHTML = S.tab === 'home' ? viewHome() : S.tab === 'explore' ? viewExplore() : S.tab === 'reels' ? viewReels() : viewProfile();
+  v.scrollTop = keepScroll ? y : 0;
+  watchVideos();
+}
+function refreshPost(id) {
+  const p = byId(id); if (!p) return;
+  $$(`[data-post="${id}"]`).forEach(el => {
+    const pa = $('.pa', el), pm = $('.pm', el), rail = $('.rail', el);
+    if (pa) pa.innerHTML = postActions(p);
+    if (pm) pm.innerHTML = postMeta(p);
+    if (rail) rail.innerHTML = railHTML(p);
+  });
+  if (S.tab === 'profile') { const v = $('#view'), y = v.scrollTop; v.innerHTML = viewProfile(); v.scrollTop = y; }
+  renderNav();
+}
+
+/* ---------- video autoplay ---------- */
+let io;
+function watchVideos() {
+  if (io) io.disconnect();
+  io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting && e.intersectionRatio >= 0.6) { v.muted = S.muted; const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }
+      else v.pause();
+    });
+  }, {threshold: [0, 0.6]});
+  $$('video.pv, video.rv').forEach(v => {
+    io.observe(v);
+    if (v.classList.contains('rv')) v.addEventListener('timeupdate', () => { const bar = v.parentElement.querySelector('.r-bar i'); if (bar && v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%'; });
+  });
+}
+function applyMute() {
+  $$('video.pv, video.rv').forEach(v => { v.muted = S.muted; });
+  $$('.mute-ind').forEach(e => e.innerHTML = S.muted ? I.muted() : I.sound());
+  const tb = $('[data-action="toggle-mute"]'); if (tb) { tb.innerHTML = S.muted ? I.muted({s: 22}) : I.sound({s: 22}); tb.setAttribute('aria-label', S.muted ? 'Turn sound on' : 'Mute'); }
+}
+
+/* ---------- sheets ---------- */
+function sheet(html, opts = {}) {
+  closeSheet();
+  const b = document.createElement('div'); b.className = 'backdrop'; b.id = 'sheet';
+  b.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" ${opts.label ? `aria-label="${esc(opts.label)}"` : ''}><div class="grab"></div>${html}</div>`;
+  b.addEventListener('click', e => { if (e.target === b) closeSheet(); });
+  $('#layer').appendChild(b);
+  sheetClose = opts.onClose || null;
+  return b;
+}
+let sheetClose = null;
+function closeSheet() { const s = $('#sheet'); if (s) s.remove(); S.comments = null; const cb = sheetClose; sheetClose = null; if (cb) cb(); }
+
+/* theme editor */
+let thDraft, thOrig, coverDraft;
+function openTheme() {
+  thOrig = fullTheme(S.profile.theme); thDraft = Object.assign({}, thOrig); coverDraft = undefined;
+  const b = sheet(`<h3>Customize your theme</h3><div id="thBody"></div>
+    <div class="th-foot"><button class="btn ghost" data-x="cancel">Cancel</button><button class="btn" data-x="save">Save theme</button></div>`,
+    {label: 'Customize your theme', onClose: () => applyTheme(thOrig)});
+  drawTheme();
+  $('[data-x=cancel]', b).onclick = closeSheet;
+  $('[data-x=save]', b).onclick = async () => {
+    S.profile.theme = Object.assign({}, thDraft);
+    if (coverDraft !== undefined) S.profile.cover = coverDraft;
+    thOrig = S.profile.theme;
+    await dbPut('meta', S.profile, 'profile').catch(() => toast('Could not save theme'));
+    closeSheet(); render(true); toast('Theme saved');
+  };
+  b.addEventListener('input', e => {
+    if (e.target.id === 'thAccent' || e.target.id === 'thBg') { thDraft[e.target.id === 'thAccent' ? 'accent' : 'bg'] = e.target.value.toUpperCase(); thDraft.preset = 'custom'; applyTheme(thDraft); }
+  });
+  b.addEventListener('change', e => { if (e.target.id === 'thAccent' || e.target.id === 'thBg') drawTheme(); });
+}
+function drawTheme() {
+  const box = $('#thBody'); if (!box) return;
+  const sh = box.closest('.sheet'), y = sh.scrollTop, t = thDraft;
+  const cover = coverDraft !== undefined ? coverDraft : S.profile.cover;
+  const sw = (k, c) => `<button class="th-c ${t[k].toUpperCase() === c ? 'on' : ''}" data-action="th" data-k="${k}" data-v="${c}" aria-label="${k === 'bg' ? 'Background' : 'Accent'} ${c}" aria-pressed="${t[k].toUpperCase() === c}" style="background:${c}"></button>`;
+  box.innerHTML = `
+    <div class="th-sec"><div class="th-l">Themes</div><div class="th-presets">
+      ${PRESETS.map(p => `<button class="th-pre ${t.preset === p.id ? 'on' : ''}" data-action="th" data-k="preset" data-v="${p.id}" aria-pressed="${t.preset === p.id}" style="background:${p.bg};color:${lum(p.bg) < 0.25 ? '#F4F4F6' : '#111111'};font-family:'${p.font}'"><span class="th-dot" style="background:${p.accent}"></span>${p.name}</button>`).join('')}
+    </div></div>
+    <div class="th-sec"><div class="th-l">Accent color</div><div class="th-sw">${ACCENTS.map(c => sw('accent', c)).join('')}
+      <span class="th-custom">${I.plus({s: 16})}<input type="color" id="thAccent" value="${t.accent.toLowerCase()}" aria-label="Pick any accent color"></span></div></div>
+    <div class="th-sec"><div class="th-l">Background</div><div class="th-sw">${BGS.map(c => sw('bg', c)).join('')}
+      <span class="th-custom">${I.plus({s: 16})}<input type="color" id="thBg" value="${t.bg.toLowerCase()}" aria-label="Pick any background color"></span></div></div>
+    <div class="th-sec"><div class="th-l">Font</div><div class="th-opts">
+      ${FONTS.map(f => `<button class="th-o ${t.font === f.id ? 'on' : ''}" data-action="th" data-k="font" data-v="${f.id}" aria-pressed="${t.font === f.id}"><b style="font-family:'${f.id}'">Aa</b><span>${f.label}</span></button>`).join('')}
+    </div></div>
+    <div class="th-sec"><div class="th-l">Photo shape</div><div class="th-opts">
+      ${SHAPES.map(s => `<button class="th-o ${t.shape === s.id ? 'on' : ''}" data-action="th" data-k="shape" data-v="${s.id}" aria-pressed="${t.shape === s.id}"><i style="display:block;width:30px;height:30px;background:var(--accent);border-radius:${s.r}"></i><span>${s.label}</span></button>`).join('')}
+    </div></div>
+    <div class="th-sec"><div class="th-l">Profile cover</div>
+      <div class="th-cover" ${cover ? `style="background-image:url('${url(cover)}')"` : ''} role="img" aria-label="${cover ? 'Cover photo' : 'Cover uses your accent color'}"></div>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="btn ghost" data-action="pick-cover">${cover ? 'Change' : 'Add'} cover photo</button>${cover ? '<button class="btn ghost" data-action="cover-rm">Remove</button>' : ''}</div>
+      ${cover ? '' : '<p class="hint" style="margin:8px 0 0">With no photo, your cover uses your accent color.</p>'}
+    </div>`;
+  sh.scrollTop = y;
+}
+function setTheme(k, v) {
+  if (k === 'preset') { const p = PRESETS.find(x => x.id === v); if (!p) return; Object.assign(thDraft, {preset: p.id, bg: p.bg, accent: p.accent, font: p.font}); }
+  else { thDraft[k] = v; if (k === 'bg' || k === 'accent') thDraft.preset = 'custom'; }
+  applyTheme(thDraft); drawTheme();
+}
+function confirmSheet(title, msg, ok, fn) {
+  const b = sheet(`<h3>${esc(title)}</h3><p style="margin:0 0 18px;text-align:center;color:var(--muted);line-height:1.5">${esc(msg)}</p>
+    <div style="display:grid;gap:8px"><button class="btn danger block" data-x="ok">${esc(ok)}</button><button class="btn ghost block" data-x="no">Cancel</button></div>`, {label: title});
+  $('[data-x=ok]', b).onclick = () => { closeSheet(); fn(); };
+  $('[data-x=no]', b).onclick = closeSheet;
+}
+function full(html) {
+  closeFull();
+  const f = document.createElement('div'); f.className = 'full'; f.id = 'full'; f.setAttribute('role', 'dialog'); f.setAttribute('aria-modal', 'true');
+  f.innerHTML = html; $('#layer').appendChild(f); return f;
+}
+function closeFull() { const f = $('#full'); if (f) { $$('video', f).forEach(v => v.pause()); f.remove(); } S.detail = null; S.draft = null; watchVideos(); }
+
+function createSheet() {
+  sheet(`<h3>Create</h3>
+    <button class="opt" data-action="pick-photos"><span class="oi">${I.image()}</span><span>Photo post<small>Pick up to 10 photos</small></span></button>
+    <button class="opt" data-action="pick-video"><span class="oi">${I.video()}</span><span>Video<small>Plays full screen in Videos</small></span></button>
+    <button class="opt" data-action="pick-moment"><span class="oi">${I.moment()}</span><span>Moment<small>A quick photo that disappears in 24 hours</small></span></button>`, {label: 'Create'});
+}
+
+/* compose */
+function openCompose() {
+  const d = S.draft; if (!d) return;
+  const prev = d.type === 'video'
+    ? `<video src="${url(d.media[0])}" playsinline controls muted></video>`
+    : `<div class="car">${d.media.map((b, i) => `<img src="${url(b)}" alt="Photo ${i + 1}">`).join('')}</div>${d.media.length > 1 ? `<span class="count">${d.media.length} photos</span>` : ''}`;
+  const f = full(`<div class="full-h"><button class="icon-btn" data-action="close-full" aria-label="Cancel">${I.close()}</button><b>New ${d.type === 'video' ? 'video' : 'post'}</b>
+      <button class="btn" data-action="publish" style="height:40px;padding:0 16px">Share</button></div>
+    <div class="full-b"><div class="compose-prev">${prev}</div>
+      <div style="padding:16px">
+        <div class="field"><label for="cap">Caption</label><textarea id="cap" maxlength="2200" placeholder="Write a caption… add #tags">${esc(d.caption || '')}</textarea></div>
+        <div class="field"><label for="loc">Location</label><input id="loc" maxlength="80" placeholder="Add a place (optional)" value="${esc(d.location || '')}"></div>
+        <p class="hint">Saved only on this phone.</p>
+      </div></div>`);
+  S.draft = d;
+  setTimeout(() => { const c = $('#cap', f); if (c) c.focus({preventScroll: true}); }, 250);
+}
+async function publish() {
+  const d = S.draft; if (!d) return;
+  const p = {id: uid(), type: d.type, media: d.media, poster: d.poster || null, caption: ($('#cap')?.value || '').trim(), location: ($('#loc')?.value || '').trim(), created: Date.now(), liked: false, saved: false, comments: []};
+  busy(true, 'Posting…');
+  try { await savePost(p); } catch (e) { busy(false); return; }
+  busy(false);
+  S.posts.unshift(p); askPersist();
+  closeFull();
+  S.tab = 'home'; render(); toast(p.type === 'video' ? 'Video posted' : 'Posted');
+}
+
+/* post detail */
+function openDetail(id) {
+  const p = byId(id); if (!p) return;
+  full(`<div class="full-h"><button class="icon-btn" data-action="close-full" aria-label="Back">${I.back()}</button><b>Post</b></div><div class="full-b">${postCard(p)}</div>`);
+  S.detail = id;
+  watchVideos();
+}
+
+/* comments */
+function openComments(id) {
+  const p = byId(id); if (!p) return;
+  const b = sheet(`<h3>Comments</h3><div class="c-list" id="clist">${commentsHTML(p)}</div>
+    <form class="c-form" id="cform">${avatar(32)}<label for="cin" class="sr">Add a comment</label><input id="cin" maxlength="500" placeholder="Add a comment…" autocomplete="off"><button type="submit" disabled>Post</button></form>`, {label: 'Comments'});
+  S.comments = id;
+  const inp = $('#cin', b), btn = $('#cform button', b);
+  inp.addEventListener('input', () => { btn.disabled = !inp.value.trim(); });
+  $('#cform', b).addEventListener('submit', async e => {
+    e.preventDefault(); const t = inp.value.trim(); if (!t) return;
+    p.comments = p.comments || []; p.comments.push({id: uid(), text: t, created: Date.now()});
+    await savePost(p).catch(() => {});
+    inp.value = ''; btn.disabled = true; $('#clist').innerHTML = commentsHTML(p); refreshPost(id);
+    $('#clist').lastElementChild?.scrollIntoView({block: 'nearest'});
+  });
+}
+function commentsHTML(p) {
+  const cs = p.comments || [];
+  let h = p.caption ? `<div class="c-item">${avatar(32)}<div class="body"><b>${esc(uname())}</b> ${fmt(p.caption)}<div class="meta"><span>${esc(ago(p.created))}</span></div></div></div>` : '';
+  if (!cs.length) return h + `<div class="p-empty" style="padding:20px">No comments yet. Start the conversation.</div>`;
+  return h + cs.map(c => `<div class="c-item">${avatar(32)}<div class="body"><b>${esc(uname())}</b> ${fmt(c.text)}<div class="meta"><span>${esc(ago(c.created))}</span><button data-action="del-comment" data-id="${p.id}" data-c="${c.id}">Delete</button></div></div></div>`).join('');
+}
+
+/* post options */
+function postMore(id) {
+  const p = byId(id); if (!p) return;
+  const b = sheet(`<h3>Post options</h3>
+    <button class="opt" data-x="edit"><span class="oi">${I.comment()}</span><span>Edit caption</span></button>
+    <button class="opt" data-x="save"><span class="oi">${p.saved ? I.saveF() : I.save()}</span><span>${p.saved ? 'Remove from saved' : 'Save'}</span></button>
+    <button class="opt red" data-x="del"><span class="oi">${I.trash()}</span><span>Delete post</span></button>`, {label: 'Post options'});
+  $('[data-x=edit]', b).onclick = () => editCaption(id);
+  $('[data-x=save]', b).onclick = () => { closeSheet(); toggle(id, 'saved'); };
+  $('[data-x=del]', b).onclick = () => confirmSheet('Delete this post?', 'It will be removed from this phone for good.', 'Delete', async () => {
+    await dbDel('posts', id).catch(() => {});
+    S.posts = S.posts.filter(x => x.id !== id);
+    if (S.detail === id) closeFull();
+    render(true); toast('Post deleted');
+  });
+}
+function editCaption(id) {
+  const p = byId(id);
+  const b = sheet(`<h3>Edit post</h3>
+    <div class="field"><label for="ecap">Caption</label><textarea id="ecap" maxlength="2200">${esc(p.caption)}</textarea></div>
+    <div class="field"><label for="eloc">Location</label><input id="eloc" maxlength="80" value="${esc(p.location)}"></div>
+    <button class="btn block" data-x="ok">Save</button>`, {label: 'Edit post'});
+  $('[data-x=ok]', b).onclick = async () => {
+    p.caption = $('#ecap').value.trim(); p.location = $('#eloc').value.trim();
+    await savePost(p).catch(() => {}); closeSheet();
+    if (S.detail === id) openDetail(id);
+    render(true); toast('Saved');
+  };
+}
+
+/* like / save */
+async function toggle(id, key, forceOn) {
+  const p = byId(id); if (!p) return;
+  const was = !!p[key];
+  p[key] = forceOn ? true : !was;
+  if (p[key] === was) return;
+  refreshPost(id);
+  await savePost(p).catch(() => {});
+  if (key === 'saved') toast(p.saved ? 'Saved' : 'Removed from saved');
+}
+function burst(mediaEl) {
+  const b = mediaEl.querySelector('.burst'); if (!b) return;
+  b.classList.remove('go'); void b.offsetWidth; b.classList.add('go');
+}
+
+/* share */
+async function share(id) {
+  const p = byId(id); if (!p) return;
+  const blob = p.media[0];
+  const ext = (blob.type || '').includes('video') ? (blob.type.split('/')[1] || 'mp4').replace('quicktime', 'mov') : 'jpg';
+  const file = new File([blob], `frame-${p.id}.${ext}`, {type: blob.type || 'image/jpeg'});
+  try {
+    if (navigator.canShare && navigator.canShare({files: [file]})) { await navigator.share({files: [file], text: p.caption || ''}); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try {
+    const a = document.createElement('a'); a.href = url(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+    toast('Saved to your downloads');
+  } catch (e) { toast('Sharing isn’t available here'); }
+}
+
+/* moments */
+let st = {i: 0, t: null, start: 0, el: null};
+function openMoment(i) {
+  if (!S.moments.length) return;
+  closeMoment();
+  const el = document.createElement('div'); el.id = 'story'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'Moments');
+  $('#layer').appendChild(el); st.el = el; showMoment(i);
+}
+function showMoment(i) {
+  const ms = S.moments; if (i < 0) i = 0;
+  if (i >= ms.length) return closeMoment();
+  st.i = i; const m = ms[i];
+  st.el.innerHTML = `<div class="st-bars">${ms.map((_, k) => `<span><i style="width:${k < i ? 100 : 0}%"></i></span>`).join('')}</div>
+    <div class="st-h">${avatar(32)}<div class="who">${esc(uname())}<small>${esc(ago(m.created))}</small></div>
+      <button class="icon-btn" data-action="del-moment" aria-label="Delete moment" style="color:#fff">${I.trash()}</button>
+      <button class="icon-btn" data-action="close-moment" aria-label="Close" style="color:#fff">${I.close()}</button></div>
+    <div class="st-img"><img src="${url(m.blob)}" alt="Moment"><button class="st-tap l" data-action="st-prev" aria-label="Previous"></button><button class="st-tap r" data-action="st-next" aria-label="Next"></button></div>`;
+  clearInterval(st.t); st.start = Date.now();
+  const bar = $$('.st-bars i', st.el)[i];
+  st.t = setInterval(() => { const k = (Date.now() - st.start) / 5000; bar.style.width = Math.min(100, k * 100) + '%'; if (k >= 1) showMoment(st.i + 1); }, 40);
+}
+function closeMoment() { clearInterval(st.t); if (st.el) st.el.remove(); st.el = null; }
+
+/* profile edit */
+let avatarDraft;
+function editProfile(welcome) {
+  const p = S.profile; avatarDraft = undefined;
+  const b = sheet(`<h3>${welcome ? 'Welcome to Frame' : 'Edit profile'}</h3>
+    ${welcome ? `<p style="margin:-4px 0 14px;text-align:center;color:var(--muted);line-height:1.5">Set up your profile. You can change it anytime.</p>` : ''}
+    <div class="ed-av"><span id="edAv">${avatar(84)}</span><button data-action="pick-avatar">Change photo</button></div>
+    <div class="field"><label for="pn">Name</label><input id="pn" maxlength="40" value="${esc(p.name)}" placeholder="Your name"></div>
+    <div class="field"><label for="pu">Username</label><input id="pu" maxlength="30" value="${esc(p.username)}" autocapitalize="none" autocorrect="off" spellcheck="false"><span class="hint">Letters, numbers, dots and underscores.</span></div>
+    <div class="field"><label for="pb">Bio</label><textarea id="pb" maxlength="150" placeholder="A little about you">${esc(p.bio)}</textarea></div>
+    <button class="btn block" data-x="ok">${welcome ? 'Get started' : 'Save'}</button>`, {label: 'Edit profile'});
+  $('[data-x=ok]', b).onclick = async () => {
+    const u = $('#pu').value.toLowerCase().replace(/[^a-z0-9._]/g, '').slice(0, 30);
+    p.name = $('#pn').value.trim(); p.username = u || 'you'; p.bio = $('#pb').value.trim();
+    if (avatarDraft !== undefined) p.avatar = avatarDraft;
+    p.setup = true;
+    await dbPut('meta', p, 'profile').catch(() => toast('Could not save profile'));
+    closeSheet(); render(true);
+  };
+}
+function settings() {
+  const b = sheet(`<h3>Settings</h3>
+    <div style="background:var(--soft);border-radius:14px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.5">
+      <b>Storage</b><div id="stUse" style="color:var(--muted)">Checking…</div>
+      <div style="color:var(--muted);margin-top:6px">Your posts live only on this phone, in this browser. Clearing your browser data deletes them.</div></div>
+    <button class="opt" data-action="theme"><span class="oi">${I.image()}</span><span>Customize theme<small>Colors, font, photo shape and cover</small></span></button>
+    <button class="opt red" data-x="clear"><span class="oi">${I.trash()}</span><span>Delete everything<small>Posts, moments and profile</small></span></button>`, {label: 'Settings'});
+  (async () => {
+    let txt = DB ? 'Saved on this phone' : 'Storage isn’t available in this browser, so posts clear when you close the app.';
+    try { if (DB && navigator.storage?.estimate) { const e = await navigator.storage.estimate(); txt = `Using ${(e.usage / 1048576).toFixed(1)} MB`; } } catch (e) {}
+    const el = $('#stUse'); if (el) el.textContent = txt;
+  })();
+  $('[data-x=clear]', b).onclick = () => confirmSheet('Delete everything?', 'All posts, moments and your profile will be erased from this phone.', 'Delete everything', async () => {
+    await dbClear().catch(() => {});
+    S.posts = []; S.moments = []; S.profile = {name: '', username: 'you', bio: '', avatar: null};
+    applyTheme(DEFAULT_THEME); S.tab = 'home'; render(); toast('Everything deleted'); editProfile(true);
+  });
+}
+
+/* ---------- file pickers ---------- */
+function pick(id) { const i = $('#' + id); i.value = ''; i.click(); }
+$('#pickPhotos').addEventListener('change', async e => {
+  const files = [...e.target.files].filter(f => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name)).slice(0, 10);
+  if (!files.length) return;
+  if (e.target.files.length > 10) toast('Only the first 10 photos were added');
+  closeSheet(); busy(true, 'Preparing photos…');
+  const media = [];
+  for (const f of files) { try { media.push(await compress(f)); } catch (err) {} }
+  busy(false);
+  if (!media.length) return toast('Those photos couldn’t be opened');
+  S.draft = {type: 'photo', media}; openCompose();
+});
+$('#pickVideo').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  closeSheet();
+  if (f.size > 300 * 1048576) return toast('That video is too big (300 MB max)');
+  busy(true, 'Preparing video…');
+  const poster = await videoPoster(f);
+  busy(false);
+  S.draft = {type: 'video', media: [f], poster}; openCompose();
+});
+$('#pickMoment').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  closeSheet(); busy(true, 'Adding moment…');
+  try {
+    const blob = await compress(f, 1600);
+    const m = {id: uid(), blob, created: Date.now()};
+    await dbPut('moments', m); S.moments.push(m); askPersist();
+    busy(false); if (S.tab !== 'home') S.tab = 'home'; render(); toast('Moment added for 24 hours');
+  } catch (err) { busy(false); toast('Couldn’t add that photo'); }
+});
+$('#pickAvatar').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    avatarDraft = await compress(f, 400, 0.85);
+    const el = $('#edAv'); if (el) el.innerHTML = `<img class="av" style="width:84px;height:84px" src="${url(avatarDraft)}" alt="New profile photo">`;
+  } catch (err) { toast('Couldn’t open that photo'); }
+});
+
+$('#pickCover').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { coverDraft = await compress(f, 1400, 0.85); drawTheme(); } catch (err) { toast('Couldn’t open that photo'); }
+});
+
+/* ---------- events ---------- */
+const taps = new Map();
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-action]'); if (!el) return;
+  const a = el.dataset.action, id = el.dataset.id;
+  switch (a) {
+    case 'tab':
+      if (S.tab === el.dataset.tab) { $('#view').scrollTo({top: 0, behavior: 'smooth'}); if (S.tab === 'reels') $('.reels')?.scrollTo({top: 0, behavior: 'smooth'}); return; }
+      S.tab = el.dataset.tab; render(); break;
+    case 'create': createSheet(); break;
+    case 'pick-photos': pick('pickPhotos'); break;
+    case 'pick-video': pick('pickVideo'); break;
+    case 'pick-moment': pick('pickMoment'); break;
+    case 'pick-avatar': pick('pickAvatar'); break;
+    case 'publish': publish(); break;
+    case 'close-full': closeFull(); break;
+    case 'like': toggle(id, 'liked'); break;
+    case 'save': toggle(id, 'saved'); break;
+    case 'share': share(id); break;
+    case 'comments': openComments(id); break;
+    case 'post-more': postMore(id); break;
+    case 'open': openDetail(id); break;
+    case 'go-saved': S.tab = 'profile'; S.ptab = 'saved'; render(); break;
+    case 'ptab': S.ptab = el.dataset.t; { const v = $('#view'), y = v.scrollTop; v.innerHTML = viewProfile(); v.scrollTop = y; } break;
+    case 'edit-profile': editProfile(false); break;
+    case 'settings': settings(); break;
+    case 'theme': openTheme(); break;
+    case 'th': setTheme(el.dataset.k, el.dataset.v); break;
+    case 'pick-cover': pick('pickCover'); break;
+    case 'cover-rm': coverDraft = null; drawTheme(); break;
+    case 'tag': e.stopPropagation(); closeSheet(); if ($('#full')) closeFull(); S.search = '#' + el.dataset.tag; S.tab = 'explore'; render(); break;
+    case 'view-moment': openMoment(+el.dataset.i); break;
+    case 'close-moment': closeMoment(); break;
+    case 'st-prev': showMoment(st.i - 1); break;
+    case 'st-next': showMoment(st.i + 1); break;
+    case 'del-moment': {
+      const m = S.moments[st.i]; if (!m) return; clearInterval(st.t);
+      await dbDel('moments', m.id).catch(() => {});
+      S.moments.splice(st.i, 1);
+      if (!S.moments.length) closeMoment(); else showMoment(Math.min(st.i, S.moments.length - 1));
+      render(true); toast('Moment deleted'); break;
+    }
+    case 'del-comment': {
+      const p = byId(id); if (!p) return;
+      p.comments = (p.comments || []).filter(c => c.id !== el.dataset.c);
+      await savePost(p).catch(() => {}); $('#clist').innerHTML = commentsHTML(p); refreshPost(id); break;
+    }
+    case 'toggle-mute': S.muted = !S.muted; applyMute(); break;
+    case 'mtap': case 'rtap': {
+      // single tap = sound (videos), double tap = like
+      const key = id || el.dataset.id, now = Date.now(), last = taps.get(key) || 0;
+      const media = a === 'rtap' ? el.parentElement : el;
+      if (now - last < 300) {
+        taps.delete(key); clearTimeout(media._t);
+        burst(media); toggle(key, 'liked', true);
+      } else {
+        taps.set(key, now);
+        const isVid = !!media.querySelector('video');
+        if (isVid) media._t = setTimeout(() => {
+          S.muted = !S.muted; applyMute();
+          const v = media.querySelector('video'); if (v && v.paused) v.play().catch(() => {});
+          const fl = media.querySelector('.flash'); if (fl) { fl.innerHTML = S.muted ? I.muted({s: 30}) : I.sound({s: 30}); fl.classList.add('on'); setTimeout(() => fl.classList.remove('on'), 600); }
+        }, 300);
+      }
+      break;
+    }
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'q') { S.search = e.target.value; $('#results').innerHTML = gridHTML(searchHits(), 'No posts match that search.'); }
+});
+document.addEventListener('scroll', e => {
+  const c = e.target; if (!(c instanceof Element) || !c.classList.contains('car')) return;
+  const i = Math.round(c.scrollLeft / c.clientWidth), m = c.parentElement;
+  $$('.dots span', m).forEach((d, k) => d.classList.toggle('on', k === i));
+  const n = $('.count', m); if (n && !n.textContent.includes('photos')) n.textContent = `${i + 1}/${c.children.length}`;
+}, true);
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (st.el) closeMoment(); else if ($('#sheet')) closeSheet(); else if ($('#full')) closeFull();
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) $$('video').forEach(v => v.pause()); else watchVideos(); });
+
+/* ---------- boot ---------- */
+(async function boot() {
+  const ok = await openDB();
+  try {
+    S.profile = await dbGet('meta', 'profile');
+    const posts = await dbAll('posts'); S.posts = posts.sort((a, b) => b.created - a.created);
+    const ms = await dbAll('moments'); const now = Date.now();
+    S.moments = [];
+    for (const m of ms.sort((a, b) => a.created - b.created)) { if (now - m.created > DAY) dbDel('moments', m.id).catch(() => {}); else S.moments.push(m); }
+  } catch (e) {}
+  if (!S.profile) S.profile = {name: '', username: 'you', bio: '', avatar: null};
+  applyTheme(S.profile.theme);
+  render();
+  if (!ok) toast('Storage isn’t available here, so posts won’t be kept');
+  if (!S.profile.setup) editProfile(true);
+})();
+})();
+</script>
+</body>
+</html>
